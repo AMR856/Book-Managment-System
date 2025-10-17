@@ -2,27 +2,33 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 const createAuthor = async (data) => {
-  return prisma.authors.create({ data });
+  return await prisma.authors.create({ data });
 };
 
 const deleteAuthor = async (id) => {
-  return prisma.authors.delete({
+  return await prisma.authors.delete({
     where: { id },
   });
 };
 
-const getAuthor = async (id) => {
-  return prisma.authors.findUnique({
+const getAuthorByID = async (id) => {
+  return await prisma.authors.findUnique({
     where: { id },
   });
 };
 
-const getAllAuthors = async() => {
-  return prisma.authors.findMany();
+const getAuthorByEmail = async(email) => {
+  return await prisma.authors.findUnique({
+    where: { email },
+  });
+}
+
+const getAllAuthors = async () => {
+  return await prisma.authors.findMany();
 };
 
-const updateAuthor = async(id, data) => {
-  return prisma.author.update({
+const updateAuthor = async (id, data) => {
+  return await prisma.authors.update({
     where: { id },
     data
   });
@@ -33,6 +39,7 @@ module.exports = {
   createAuthor,
   deleteAuthor,
   updateAuthor,
-  getAuthor,
+  getAuthorByID,
+  getAuthorByEmail,
   getAllAuthors
 };

@@ -15,7 +15,7 @@ const createAuthor = async (req, res, next) => {
 
 const getAllAuthors = async (req, res, next) => {
   try {
-    const authors = await authorService.getAllBooksService();
+    const authors = await authorService.getAllAuthorsService();
     res.status(200).json({
       status: SUCCESS,
       data: authors,
@@ -27,7 +27,7 @@ const getAllAuthors = async (req, res, next) => {
 
 const getAuthor = async (req, res, next) => {
   try {
-    const author = await authorService.getBookService({
+    const author = await authorService.getAuthorService({
       id: Number(req.params.id),
     });
     res.status(200).json({

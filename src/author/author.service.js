@@ -2,19 +2,19 @@ const authorModel = require('./author.model.js');
 const CustomError = require('../utils/customError.js');
 
 const createAuthorService = async (data) => {
-  const isExist = await authorModel.getAuthor(data.id);
+  const isExist = await authorModel.getAuthorByEmail(data.email);
   if (isExist) {
-    throw new CustomError('An author with this ID already exist', 409);
+    throw new CustomError('An author with this email already exist', 409);
   }
   return authorModel.createAuthor(data);
 }
 
-const getAllBooksService = async () => {
+const getAllAuthorsService = async () => {
   return authorModel.getAllAuthors();
 }
 
-const getBookService = async(data) => {
-  const author = await authorModel.getAuthor(data.id);
+const getAuthorService = async(data) => {
+  const author = await authorModel.getAuthorByID(data.id);
   if (!author){
     throw new CustomError("Author with this ID doesn't exist", 404);
   }
@@ -22,32 +22,30 @@ const getBookService = async(data) => {
 }
 
 const deleteAuthorService = async (data) => {
-  try {
-    await authorModel.deleteAuthor(data.id);
-  } catch(error) {
-    if (error.code === 'P2025') {
-      throw CustomError('Author not found', 400);
-    }
+  const author = await authorModel.getAuthorByID(data.id);
+  if (!author){
+    throw new CustomError("Author with this ID doesn't exist", 404);
   }
-  return true;
+  return await authorModel.deleteAuthor(data.id);
 }
 
-const updateAuthorService = async(id, data) => {
-  try {
-    const { createdAt, updatedAt, ...safeData } = data;
-    await authorModel.updateAuthor(id, safeData);
-  } catch(error) {
-    if (error.code === 'P2025') {
-      throw CustomError('Author not found', 400);
-    }
+const updateAuthorService = async(data) => {
+  const { createdAt, updatedAt, id, ...safeData } = data;
+  const authorID = await authorModel.getAuthorByID(id);
+  if (!authorID){
+    throw new CustomError("Author with this ID doesn't exist", 404);
   }
-  return true;
+  const authorEmail = await authorModel.getAuthorByEmail(safeData.email);
+  if (authorEmail){
+    throw new CustomError("Can't have two authors with the same email", 400);
+  }
+  return await authorModel.updateAuthor(id, safeData);
 }
 
 module.exports = {
   createAuthorService,
-  getAllBooksService,
-  getBookService,
+  getAllAuthorsService,
+  getAuthorService,
   updateAuthorService,
   deleteAuthorService
 };
