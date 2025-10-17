@@ -1,0 +1,23 @@
+{
+  "author": "",
+  "dependencies": {
+    "@prisma/client": "^6.17.1",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "joi": "^18.0.1"
+  },
+  "description": "",
+  "devDependencies": {
+    "nodemon": "^3.1.10",
+    "prisma": "^6.17.1"
+  },
+  "keywords": [],
+  "license": "ISC",
+  "main": "index.js",
+  "name": "book-managment-system",
+  "scripts": {
+    "dev": "nodemon src/app.js",
+    "start": "node src/app.js"
+  },
+  "version": "1.0.0"
+}
