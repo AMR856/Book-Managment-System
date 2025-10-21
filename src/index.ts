@@ -2,12 +2,13 @@ import express from "express";
 import bodyParser from "body-parser";
 import { errorHandler } from "./utils/errorHandler";
 import authorRouter from "./author/author.route";
-
+import publisherRouter from './publishers/publisher.route';
 const app = express();
 const port = process.env.PORT || 5000;
 
 app.use(bodyParser.json());
 app.use("/authors", authorRouter);
+app.use('/publishers', publisherRouter);
 app.use(errorHandler);
 
 app.listen(port, () =>

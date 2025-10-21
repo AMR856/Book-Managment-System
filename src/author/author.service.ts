@@ -10,10 +10,14 @@ import CustomError from "../types/customError";
 import { AuthorData } from "../types/authorData";
 
 export const createAuthorService = async (data: AuthorData) => {
+  if (!data){
+    throw new CustomError("Please, include the body of the request", 400);
+  }
   const isExist = await getAuthorByEmail(data.email);
   if (isExist) {
     throw new CustomError("An author with this email already exist", 409);
   }
+  console.log('Got here');
   return createAuthor(data);
 };
 
@@ -22,6 +26,9 @@ export const getAllAuthorsService = async () => {
 };
 
 export const getAuthorService = async (id: Number | undefined) => {
+  if (!id){
+    throw new CustomError("Please include the id of the publisher", 400);
+  }
   const author = await getAuthorByID(id);
   if (!author) {
     throw new CustomError("Author with this ID doesn't exist", 404);
@@ -30,6 +37,9 @@ export const getAuthorService = async (id: Number | undefined) => {
 };
 
 export const deleteAuthorService = async (id: Number | undefined) => {
+  if (!id){
+    throw new CustomError("Please include the id of the publisher", 400);
+  }
   const author = await getAuthorByID(id);
   if (!author) {
     throw new CustomError("Author with this ID doesn't exist", 404);
@@ -39,6 +49,9 @@ export const deleteAuthorService = async (id: Number | undefined) => {
 
 export const updateAuthorService = async (data: AuthorData) => {
   const { createdAt, updatedAt, id, ...safeData } = data;
+  if (!id){
+    throw new CustomError("Please include the id of the publisher", 400);
+  }
   const authorID = await getAuthorByID(Number(id));
   if (!authorID) {
     throw new CustomError("Author with this ID doesn't exist", 404);

@@ -1,0 +1,72 @@
+[
+  {
+    "name": "Penguin Random House",
+    "address": "1745 Broadway, New York, NY 10019, USA",
+    "email": "contact@penguinrandomhouse.com",
+    "phone": "+1-212-782-9000",
+    "website": "https://www.penguinrandomhouse.com"
+  },
+  {
+    "name": "HarperCollins Publishers",
+    "address": "195 Broadway, New York, NY 10007, USA",
+    "email": "info@harpercollins.com",
+    "phone": "+1-212-207-7000",
+    "website": "https://www.harpercollins.com"
+  },
+  {
+    "name": "Simon & Schuster",
+    "address": "1230 Avenue of the Americas, New York, NY 10020, USA",
+    "email": "support@simonandschuster.com",
+    "phone": "+1-212-698-7000",
+    "website": "https://www.simonandschuster.com"
+  },
+  {
+    "name": "Macmillan Publishers",
+    "address": "120 Broadway, New York, NY 10271, USA",
+    "email": "info@macmillan.com",
+    "phone": "+1-646-307-5151",
+    "website": "https://us.macmillan.com"
+  },
+  {
+    "name": "Hachette Book Group",
+    "address": "1290 Avenue of the Americas, New York, NY 10104, USA",
+    "email": "contact@hbgusa.com",
+    "phone": "+1-212-364-1200",
+    "website": "https://www.hachettebookgroup.com"
+  },
+  {
+    "name": "Scholastic Inc.",
+    "address": "557 Broadway, New York, NY 10012, USA",
+    "email": "customerservice@scholastic.com",
+    "phone": "+1-800-724-6527",
+    "website": "https://www.scholastic.com"
+  },
+  {
+    "name": "O'Reilly Media",
+    "address": "1005 Gravenstein Hwy North, Sebastopol, CA 95472, USA",
+    "email": "info@oreilly.com",
+    "phone": "+1-707-827-7000",
+    "website": "https://www.oreilly.com"
+  },
+  {
+    "name": "Springer Nature",
+    "address": "One New York Plaza, Suite 4600, New York, NY 10004, USA",
+    "email": "service@springernature.com",
+    "phone": "+1-212-460-1500",
+    "website": "https://www.springernature.com"
+  },
+  {
+    "name": "Oxford University Press",
+    "address": "Great Clarendon Street, Oxford OX2 6DP, UK",
+    "email": "info@oup.com",
+    "phone": "+44-1865-556767",
+    "website": "https://global.oup.com"
+  },
+  {
+    "name": "Cambridge University Press",
+    "address": "University Printing House, Shaftesbury Road, Cambridge CB2 8BS, UK",
+    "email": "support@cambridge.org",
+    "phone": "+44-1223-358331",
+    "website": "https://www.cambridge.org"
+  }
+]
