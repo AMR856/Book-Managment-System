@@ -1,0 +1,37 @@
+[
+  {
+    "name": "George Orwell",
+    "birthDate": "1903-06-25T00:00:00.000Z",
+    "nationality": "British",
+    "biography": "Author of 1984 and Animal Farm, known for his political satire.",
+    "email": "george.orwell@example.com"
+  },
+  {
+    "name": "Jane Austen",
+    "birthDate": "1775-12-16T00:00:00.000Z",
+    "nationality": "British",
+    "biography": "English novelist best known for Pride and Prejudice and Sense and Sensibility.",
+    "email": "jane.austen@example.com"
+  },
+  {
+    "name": "Gabriel García Márquez",
+    "birthDate": "1927-03-06T00:00:00.000Z",
+    "nationality": "Colombian",
+    "biography": "Nobel Prize-winning author of One Hundred Years of Solitude.",
+    "email": "gabriel.marquez@example.com"
+  },
+  {
+    "name": "Chimamanda Ngozi Adichie",
+    "birthDate": "1977-09-15T00:00:00.000Z",
+    "nationality": "Nigerian",
+    "biography": "Author of Americanah and Half of a Yellow Sun, known for her modern feminist themes.",
+    "email": "chimamanda.adichie@example.com"
+  },
+  {
+    "name": "Haruki Murakami",
+    "birthDate": "1949-01-12T00:00:00.000Z",
+    "nationality": "Japanese",
+    "biography": "Japanese novelist known for surrealist works like Kafka on the Shore and 1Q84.",
+    "email": "haruki.murakami@example.com"
+  }
+]

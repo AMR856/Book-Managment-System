@@ -1,0 +1,53 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model authors {
+  id             Int      @id @default(autoincrement())
+  name           String
+  birthDate      DateTime?
+  nationality    String?
+  biography      String?
+  email          String  @unique
+  books          books[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model publishers {
+  id             Int      @id @default(autoincrement())
+  name           String
+  address        String?
+  email          String  @unique
+  phone          String?
+  website        String?
+  books          books[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model books {
+  id             Int        @id @default(autoincrement())
+  title          String
+  isbn           String     @unique
+  year           Int
+  genre          String
+  available      Boolean    @default(true)
+  authorId       Int
+  publisherId    Int
+  author         authors     @relation(fields: [authorId], references: [id])
+  publisher      publishers  @relation(fields: [publisherId], references: [id])
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+}
+
+model users {
+  id            Int             @id @default(autoincrement())
+  email         String          @unique
+  password      String
+}
