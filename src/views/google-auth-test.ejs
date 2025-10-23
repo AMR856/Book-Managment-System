@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sign in with Google — Test</title>
+  <style>
+    :root{
+      --bg:#0b0b0b; /* near black */
+      --card:#0f0f10;
+      --accent:#e11d2b; /* vivid red */
+      --muted:#bdbdbd;
+      --glass: rgba(255,255,255,0.03);
+    }
+    html,body{height:100%;}
+    body{
+      margin:0; font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
+      background: linear-gradient(180deg, #060607 0%, #0b0b0b 60%);
+      color:var(--muted);
+      display:flex; align-items:center; justify-content:center; padding:32px;
+    }
+
+    .card{
+      width:420px; max-width:96%; background:linear-gradient(180deg,var(--card), #0b0b0b);
+      border-radius:14px; padding:28px; box-shadow: 0 8px 30px rgba(0,0,0,0.7);
+      border: 1px solid rgba(255,255,255,0.03);
+    }
+
+    .brand{
+      display:flex; gap:12px; align-items:center; margin-bottom:18px;
+    }
+    .logo{
+      width:46px; height:46px; border-radius:10px; background:linear-gradient(135deg,var(--accent),#8b0e12); display:flex; align-items:center; justify-content:center; color:white; font-weight:700; font-size:18px; box-shadow: 0 6px 18px rgba(225,29,43,0.18);
+    }
+
+    h1{margin:0; font-size:20px; color:#fff}
+    p.lead{margin:6px 0 18px; color:var(--muted); font-size:13px}
+
+    .btn-google{
+      display:flex; align-items:center; gap:12px; width:100%; padding:12px 14px; border-radius:10px; text-decoration:none;
+      background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border: 1px solid rgba(255,255,255,0.04);
+      color: #fff; cursor:pointer; transition:transform .12s ease, box-shadow .12s ease;
+    }
+    .btn-google:hover{ transform: translateY(-3px); box-shadow: 0 12px 30px rgba(0,0,0,0.6); }
+
+    .google-mark{ width:20px; height:20px; display:inline-block; }
+
+    .meta{ margin-top:16px; font-size:13px; color:var(--muted); }
+
+    .profile{
+      margin-top:18px; display:flex; gap:12px; align-items:center; background:var(--glass); padding:12px; border-radius:10px; border:1px solid rgba(255,255,255,0.02);
+    }
+    .avatar{ width:48px; height:48px; border-radius:8px; overflow:hidden; background:#222; display:flex; align-items:center; justify-content:center; }
+    .avatar img{ width:100%; height:100%; object-fit:cover }
+
+    .txt{ font-size:14px; color:#fff }
+    .muted{ color:var(--muted); font-size:12px }
+
+    .logout{ margin-left:auto; padding:8px 10px; background:transparent; color:var(--accent); border:1px solid rgba(225,29,43,0.12); border-radius:8px; text-decoration:none }
+
+    footer{ margin-top:18px; text-align:center; font-size:12px; color:rgba(255,255,255,0.06) }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <div class="brand">
+      <div class="logo">GA</div>
+      <div>
+        <h1>Google Auth Tester</h1>
+        <p class="lead">A minimal page to test <strong>Sign in with Google</strong>. Stylish, simple, and dark-red themed.</p>
+      </div>
+    </div>
+
+    <% if (!user) { %>
+      <!-- Not authenticated: show Google sign-in -->
+      <a href="/auth/google" class="btn-google" aria-label="Sign in with Google">
+        <span class="google-mark" aria-hidden="true">
+          <!-- simple G mark (not the official multicolor) -->
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 12.23c0-.68-.06-1.34-.17-1.97H12v3.73h5.45c-.24 1.3-1.02 2.4-2.17 3.13v2.6h3.5c2.04-1.88 3.22-4.65 3.22-7.52z" fill="#EA4335"/>
+            <path d="M12 22c2.7 0 4.97-.9 6.63-2.44l-3.5-2.6c-.97.66-2.2 1.05-3.13 1.05-2.4 0-4.44-1.62-5.17-3.8H3.2v2.4C4.86 19.86 8.13 22 12 22z" fill="#4285F4"/>
+            <path d="M6.83 13.21A6.99 6.99 0 0 1 6.2 12c0-.4.06-.79.13-1.17V8.4H3.2A9.99 9.99 0 0 0 2 12c0 1.64.39 3.19 1.08 4.57l3.75-3.36z" fill="#FBBC05"/>
+            <path d="M12 6.8c1.47 0 2.8.5 3.85 1.49l2.87-2.87C16.94 3.84 14.7 3 12 3 8.13 3 4.86 5.14 3.2 8.4l3.83 2.43C7.56 7.92 9.6 6.8 12 6.8z" fill="#34A853"/>
+          </svg>
+        </span>
+        <span style="flex:1; text-align:left;">Continue with Google</span>
+        <span class="muted">→</span>
+      </a>
+
+      <div class="meta">Click the button to be redirected to Google's sign-in page. After you approve, you'll come back here.</div>
+    <% } else { %>
+      <!-- Authenticated view -->
+      <div class="profile">
+        <div class="avatar">
+          <% if (user.avatar) { %>
+            <img src="<%= user.avatar %>" alt="avatar" />
+          <% } else { %>
+            <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:#666">NA</div>
+          <% } %>
+        </div>
+        <div>
+          <div class="txt"><%= user.displayName || user.name || user.email %></div>
+          <div class="muted"><%= user.emails ? user.emails[0].value : user.email %></div>
+        </div>
+        <a class="logout" href="/auth/logout">Logout</a>
+      </div>
+
+      <div class="meta">You are authenticated. Use <code>req.user</code> on the server to access the full profile.</div>
+    <% } %>
+
+    <footer>Made for quick testing • Dark &amp; red</footer>
+  </main>
+</body>
+</html>
