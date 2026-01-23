@@ -6,18 +6,18 @@ import {
   deleteAuthor,
   updateAuthor,
 } from "./author.model";
+
 import CustomError from "../types/customError";
 import { AuthorData } from "../types/authorData";
 
 export const createAuthorService = async (data: AuthorData) => {
-  if (!data){
+  if (!data) {
     throw new CustomError("Please, include the body of the request", 400);
   }
   const isExist = await getAuthorByEmail(data.email);
   if (isExist) {
     throw new CustomError("An author with this email already exist", 409);
   }
-  console.log('Got here');
   return createAuthor(data);
 };
 
@@ -25,8 +25,8 @@ export const getAllAuthorsService = async () => {
   return getAllAuthors();
 };
 
-export const getAuthorService = async (id: Number | undefined) => {
-  if (!id){
+export const getAuthorService = async (id: number | undefined) => {
+  if (!id) {
     throw new CustomError("Please include the id of the publisher", 400);
   }
   const author = await getAuthorByID(id);
@@ -36,8 +36,8 @@ export const getAuthorService = async (id: Number | undefined) => {
   return author;
 };
 
-export const deleteAuthorService = async (id: Number | undefined) => {
-  if (!id){
+export const deleteAuthorService = async (id: number | undefined) => {
+  if (!id) {
     throw new CustomError("Please include the id of the publisher", 400);
   }
   const author = await getAuthorByID(id);
@@ -49,7 +49,7 @@ export const deleteAuthorService = async (id: Number | undefined) => {
 
 export const updateAuthorService = async (data: AuthorData) => {
   const { createdAt, updatedAt, id, ...safeData } = data;
-  if (!id){
+  if (!id) {
     throw new CustomError("Please include the id of the publisher", 400);
   }
   const authorID = await getAuthorByID(Number(id));
@@ -60,5 +60,5 @@ export const updateAuthorService = async (data: AuthorData) => {
   if (authorEmail) {
     throw new CustomError("Can't have two authors with the same email", 400);
   }
-  return await updateAuthor(id, safeData);
+  return await updateAuthor(Number(id), safeData);
 };

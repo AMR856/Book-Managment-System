@@ -28,10 +28,7 @@ export const getUserByEmail = async (email: string) => {
   });
 };
 
-export const updateAuthor = async (
-  id: string | undefined,
-  data: UserData
-) => {
+export const updateAuthor = async (id: string | undefined, data: UserData) => {
   return await prisma.users.update({
     where: { id },
     data,

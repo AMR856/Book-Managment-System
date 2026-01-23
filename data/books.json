@@ -1,0 +1,37 @@
+[
+  {
+    "title": "Clean Code",
+    "isbn": "9780132350884",
+    "year": 2008,
+    "genre": "Software Engineering",
+    "available": true,
+    "authorId": 1,
+    "publisherId": 1
+  },
+  {
+    "title": "Introduction to Algorithms",
+    "isbn": "9780262033848",
+    "year": 2009,
+    "genre": "Computer Science",
+    "available": true,
+    "authorId": 2,
+    "publisherId": 2
+  },
+  {
+    "title": "Design Patterns",
+    "isbn": "9780201633610",
+    "year": 1994,
+    "genre": "Software Design",
+    "available": false,
+    "authorId": 3,
+    "publisherId": 1
+  },
+  {
+    "title": "The Pragmatic Programmer",
+    "isbn": "9780201616224",
+    "year": 1999,
+    "genre": "Programming",
+    "authorId": 4,
+    "publisherId": 3
+  }
+]

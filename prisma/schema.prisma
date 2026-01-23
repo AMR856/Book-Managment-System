@@ -35,9 +35,9 @@ model books {
   id             Int        @id @default(autoincrement())
   title          String
   isbn           String     @unique
-  year           Int
-  genre          String
-  available      Boolean    @default(true)
+  year           Int?
+  genre          String?
+  available      Boolean?    @default(true)
   authorId       Int
   publisherId    Int
   author         authors     @relation(fields: [authorId], references: [id])

@@ -1,74 +1,75 @@
 import {
-  createPublisherService,
-  getAllPublishersService,
-  getPublisherService,
-  deletePublisherService,
-  updatePublisherService,
-} from "./publisher.service";
+  createAuthorService,
+  getAllAuthorsService,
+  getAuthorService,
+  deleteAuthorService,
+  updateAuthorService,
+} from "./author.service";
 import { Request, Response, NextFunction } from "express";
 import HttpMessages from "../utils/statusMessages";
 
-export const createPublisher = async (
+export const createAuthor = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
   try {
-    const newPublisher = await createPublisherService(req.body);
+    console.log(req.body);
+    const newAuthor = await createAuthorService(req.body);
     res.status(201).json({
       status: HttpMessages.SUCCESS,
-      data: newPublisher,
+      data: newAuthor,
     });
   } catch (err) {
     next(err);
   }
 };
 
-export const getAllPublishers = async (
+export const getAllAuthors = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
   try {
-    const publishers = await getAllPublishersService();
+    const authors = await getAllAuthorsService();
     res.status(200).json({
       status: HttpMessages.SUCCESS,
-      data: publishers,
+      data: authors,
     });
   } catch (err) {
     next(err);
   }
 };
 
-export const getPublisher = async (
+export const getAuthor = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
   try {
-    const publisher = await getPublisherService(Number(req.params.id));
+    const author = await getAuthorService(Number(req.params.id));
     res.status(200).json({
       status: HttpMessages.SUCCESS,
-      data: publisher,
+      data: author,
     });
   } catch (err) {
     next(err);
   }
 };
 
-export const updatePublisher = async (
+export const updateAuthor = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
   try {
-    const updated = await updatePublisherService({
+    const updated = await updateAuthorService({
       id: Number(req.params.id),
       ...req.body,
     });
     res.status(200).json({
       status: "success",
-      message: "Publisher updated successfully",
+      message: "Author updated successfully",
       data: updated,
     });
   } catch (err) {
@@ -76,16 +77,16 @@ export const updatePublisher = async (
   }
 };
 
-export const deletePublisher = async (
+export const deleteAuthor = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
   try {
-    await deletePublisherService(Number(req.params.id));
+    await deleteAuthorService(Number(req.params.id));
     res.status(200).json({
       status: HttpMessages.SUCCESS,
-      message: "Publisher deleted successfully",
+      message: "Author deleted successfully",
     });
   } catch (err) {
     next(err);

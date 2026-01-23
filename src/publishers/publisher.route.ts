@@ -9,13 +9,13 @@ import {
   getAllPublishers,
   deletePublisher,
   createPublisher,
-  updatePublisher
-} from './publisher.controller';
+  updatePublisher,
+} from "./publisher.controller";
 
-router.get('/:id', getPublisher);
-router.get('/', getAllPublishers);
-router.post('/', validate(publisherSchema), createPublisher);
-router.put('/:id', validate(publisherSchema), updatePublisher);
-router.delete('/:id', deletePublisher);
+router.get("/:id", getPublisher);
+router.get("/", getAllPublishers);
+router.post("/", validate(publisherSchema), createPublisher);
+router.put("/:id", validate(publisherSchema), updatePublisher);
+router.delete("/:id", deletePublisher);
 
 export default router;

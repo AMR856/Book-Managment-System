@@ -10,10 +10,9 @@ import CustomError from "../types/customError";
 import { PublisherData } from "../types/publisherData";
 
 export const createPublisherService = async (data: PublisherData) => {
-  if (!data){
+  if (!data) {
     throw new CustomError("Please, include the body of the request", 400);
   }
-  console.log(data);
   const isExist = await getPublisherByEmail(data.email);
   if (isExist) {
     throw new CustomError("A publisher with this email already exist", 409);
@@ -25,8 +24,8 @@ export const getAllPublishersService = async () => {
   return getAllPublishers();
 };
 
-export const getPublisherService = async (id: Number | undefined) => {
-  if (!id){
+export const getPublisherService = async (id: number | undefined) => {
+  if (!id) {
     throw new CustomError("Please include the id of the publisher", 400);
   }
   const publisher = await getPublisherByID(id);
@@ -36,8 +35,8 @@ export const getPublisherService = async (id: Number | undefined) => {
   return publisher;
 };
 
-export const deletePublisherService = async (id: Number | undefined) => {
-  if (!id){
+export const deletePublisherService = async (id: number | undefined) => {
+  if (!id) {
     throw new CustomError("Please include the id of the publisher", 400);
   }
   const publisher = await getPublisherByID(id);
@@ -49,7 +48,7 @@ export const deletePublisherService = async (id: Number | undefined) => {
 
 export const updatePublisherService = async (data: PublisherData) => {
   const { createdAt, updatedAt, id, ...safeData } = data;
-  if (!id){
+  if (!id) {
     throw new CustomError("Please include the id of the publisher", 400);
   }
   const publisherID = await getPublisherByID(Number(id));

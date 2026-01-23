@@ -6,13 +6,13 @@ export const createPublisher = async (data: PublisherData) => {
   return await prisma.publishers.create({ data });
 };
 
-export const deletePublisher = async (id: Number | undefined) => {
+export const deletePublisher = async (id: number | undefined) => {
   return await prisma.publishers.delete({
     where: { id },
   });
 };
 
-export const getPublisherByID = async (id: Number | undefined) => {
+export const getPublisherByID = async (id: number | undefined) => {
   return await prisma.publishers.findUnique({
     where: { id },
   });
@@ -25,12 +25,20 @@ export const getPublisherByEmail = async (email: string) => {
 };
 
 export const getAllPublishers = async () => {
-  return await prisma.publishers.findMany();
+  return prisma.publishers.findMany({
+    include: {
+      books: {
+        include: {
+          author: true,
+        },
+      },
+    },
+  });
 };
 
 export const updatePublisher = async (
   id: string | undefined,
-  data: PublisherData
+  data: PublisherData,
 ) => {
   return await prisma.publishers.update({
     where: { id },
