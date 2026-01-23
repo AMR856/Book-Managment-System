@@ -1,102 +1,130 @@
-# 📚 Book Management System (WIP)
+# 📚 Book Management System
 
-A simple **Book Management System** built with **Node.js**, **TypeScript**, and **Express.js**.  
-Currently supports **Authors** and **Publishers**, with plans to add **Books** and **Users** soon.
+A **Book Management System** built with **Node.js**, **TypeScript**, and **Express.js**.
+The project follows a **modular, service-based architecture** and uses **Prisma** as the ORM.
 
 ---
 
 ## 🚧 Project Status
-> ⚙️ **Work in Progress**  
-- ✅ Authors module  
-- ✅ Publishers module  
-- ⏳ Books module *(coming soon)*  
-- ⏳ Users module *(coming soon)*  
+
+
+* ✅ Authors module
+* ✅ Publishers module
+* ✅ Books module
+* ✅ Users module
 
 ---
 
 ## 🗂️ Folder Structure
 
-```
-
+```text
 .
 ├── author
-│   ├── author.controller.ts       # Handles author-related requests
-│   ├── author.model.ts            # Author data model (Prisma / ORM)
+│   ├── author.controller.ts       # Handles author-related HTTP requests
+│   ├── author.model.ts            # Author Prisma model helpers
 │   ├── author.route.ts            # Author API routes
 │   ├── author.service.ts          # Business logic for authors
-│   └── author.validations.ts      # Request validation schema
+│   └── author.validations.ts      # Joi validation schemas
 │
 ├── publishers
-│   ├── publisher.controller.ts    # Handles publisher-related requests
-│   ├── publisher.model.ts         # Publisher data model
+│   ├── publisher.controller.ts    # Handles publisher-related HTTP requests
+│   ├── publisher.model.ts         # Publisher Prisma model helpers
 │   ├── publisher.route.ts         # Publisher API routes
 │   ├── publisher.service.ts       # Business logic for publishers
-│   └── publisher.validations.ts   # Validation schemas for publishers
+│   └── publisher.validations.ts   # Joi validation schemas
+│
+├── books
+│   ├── books.controller.ts        # Handles book-related HTTP requests
+│   ├── books.model.ts             # Book Prisma model helpers
+│   ├── books.route.ts             # Book API routes
+│   ├── books.service.ts           # Business logic for books
+│   └── books.validations.ts       # Joi validation schemas
 │
 ├── middlewares
-│   └── validate.ts                # Validation middleware
+│   └── validate.ts                # Request validation middleware
 │
-├── config                         # Configuration (DB, environment, etc.)
+├── config
+│   ├── prisma.ts                  # Prisma client setup
+│   ├── passport.ts                # Google OAuth configuration
+│
 ├── types
 │   ├── authorData.ts              # Author type definitions
-│   ├── customError.ts             # Custom error type
-│   └── publisherData.ts           # Publisher type definitions
+│   ├── publisherData.ts           # Publisher type definitions
+│   ├── bookData.ts                # Book type definitions
+│   ├── userData.ts                # User type definitions
+│   └── customError.ts             # Custom error class
 │
 ├── utils
-│   ├── errorHandler.ts            # Centralized error handling
-│   └── statusMessages.ts          # Common status / response messages
+│   ├── errorHandler.ts            # Centralized error handling middleware
+│   └── statusMessages.ts          # Common response/status messages
 │
-└── index.ts                       # Application entry point
-
-````
+├── views
+│   └── google-auth-test.ejs       # Google OAuth test page
+│
+├── prisma
+│   ├── schema.prisma              # Prisma schema
+│   └── migrations                # Database migrations
+│
+├── index.ts                       # Application entry point
+└── README.md
+```
 
 ---
 
 ## 🧩 Tech Stack
 
-- **Node.js**
-- **TypeScript**
-- **Express.js**
-- **Prisma**
-- **Joi** *(for validation)*
-- **RESTful API Design**
+* **Node.js**
+* **TypeScript**
+* **Express.js**
+* **Prisma ORM**
+* **Joi** (request validation)
+* **PostgreSQL**
+* **RESTful API design**
 
 ---
 
 ## 🚀 Setup Instructions
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/yourusername/book-management-system.git
-   cd book-management-system
-  ```
+### 1️⃣ Clone the repository
 
-2. **Install dependencies**
+```bash
+git clone https://github.com/yourusername/book-management-system.git
+cd book-management-system
+```
 
-   ```bash
-   npm install
-   ```
+### 2️⃣ Install dependencies
 
-3. **Setup environment variables**
-   Create a `.env` file with your database credentials, e.g.:
+```bash
+npm install
+```
 
-   ```env
-   DATABASE_URL="postgresql://user:password@localhost:5432/bookdb"
-   PORT=3000
-   ```
+### 3️⃣ Configure environment variables
 
-4. **Run the project**
+Create a `.env` file in the project root:
 
-   ```bash
-   npm run dev
-   ```
+```env
+DATABASE_URL="postgresql://user:password@localhost:5432/bookdb"
+PORT=3000
+```
+
+### 4️⃣ Setup the database
+
+```bash
+npx prisma migrate dev
+npx prisma generate
+```
+
+### 5️⃣ Run the project
+
+```bash
+npm run dev
+```
 
 ---
 
-## 🧠 Next Steps
+## 📌 Notes
 
-* [ ] Add **Books module**
-* [ ] Add **Users & Authentication**
-* [ ] Integrate database relations between Authors, Books, and Publishers
-* [ ] Add pagination, filtering, and search
-* [ ] Write unit and integration tests
+* Each module follows **Controller → Service → Model** separation.
+* Validation is handled using **Joi** and a centralized middleware.
+* Errors are normalized via a custom `CustomError` class and global error handler.
+* Designed to scale easily with new modules (Users, Auth, Roles, etc.).
