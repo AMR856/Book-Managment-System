@@ -1,5 +1,6 @@
+import { BookData } from "../../types/bookData";
+
 const { PrismaClient } = require("@prisma/client");
-import { BookData } from "../types/bookData";
 const prisma = new PrismaClient();
 
 export const createBook = async (data: BookData) => {

@@ -1,5 +1,6 @@
+import { AuthorData } from "../../types/authorData";
+
 const { PrismaClient } = require("@prisma/client");
-import { AuthorData } from "../types/authorData";
 const prisma = new PrismaClient();
 
 export const createAuthor = async (data: AuthorData) => {

@@ -1,74 +1,74 @@
+import HttpMessages from "../../types/statusMessages";
 import {
-  createBookService,
-  getAllBooksService,
-  getBookService,
-  deleteBookService,
-  updateBookService,
-} from "./book.service";
+  createPublisherService,
+  getAllPublishersService,
+  getPublisherService,
+  deletePublisherService,
+  updatePublisherService,
+} from "./publisher.service";
 import { Request, Response, NextFunction } from "express";
-import HttpMessages from "../utils/statusMessages";
 
-export const createBook = async (
+export const createPublisher = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
   try {
-    const newBook = await createBookService(req.body);
+    const newPublisher = await createPublisherService(req.body);
     res.status(201).json({
       status: HttpMessages.SUCCESS,
-      data: newBook,
+      data: newPublisher,
     });
   } catch (err) {
     next(err);
   }
 };
 
-export const getAllBooks = async (
+export const getAllPublishers = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
   try {
-    const authors = await getAllBooksService();
+    const publishers = await getAllPublishersService();
     res.status(200).json({
       status: HttpMessages.SUCCESS,
-      data: authors,
+      data: publishers,
     });
   } catch (err) {
     next(err);
   }
 };
 
-export const getBook = async (
+export const getPublisher = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
   try {
-    const author = await getBookService(Number(req.params.id));
+    const publisher = await getPublisherService(Number(req.params.id));
     res.status(200).json({
       status: HttpMessages.SUCCESS,
-      data: author,
+      data: publisher,
     });
   } catch (err) {
     next(err);
   }
 };
 
-export const updateBook = async (
+export const updatePublisher = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
   try {
-    const updated = await updateBookService({
+    const updated = await updatePublisherService({
       id: Number(req.params.id),
       ...req.body,
     });
     res.status(200).json({
-      status: "success",
-      message: "Book updated successfully",
+      status: HttpMessages.SUCCESS,
+      message: "Publisher updated successfully",
       data: updated,
     });
   } catch (err) {
@@ -76,16 +76,16 @@ export const updateBook = async (
   }
 };
 
-export const deleteBook = async (
+export const deletePublisher = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
   try {
-    await deleteBookService(Number(req.params.id));
+    await deletePublisherService(Number(req.params.id));
     res.status(200).json({
       status: HttpMessages.SUCCESS,
-      message: "Book deleted successfully",
+      message: "Publisher deleted successfully",
     });
   } catch (err) {
     next(err);

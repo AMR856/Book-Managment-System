@@ -4,7 +4,7 @@ import {
   Profile,
   VerifyCallback,
 } from "passport-google-oauth20";
-import { createUser, getUserByEmail, getUserByID } from "../auth/auth.model";
+import { createUser, getUserByEmail, getUserByID } from "../modules/auth/auth.model";
 
 passport.use(
   new GoogleStrategy(
@@ -22,15 +22,18 @@ passport.use(
       const email = profile.emails?.[0]?.value ?? "";
       const providerId = profile.id;
       const avatar = profile.photos?.[0]?.value as string;
-      let user = await getUserByEmail(email);
+      const adminEmails = (process.env.ADMIN_EMAILS ?? "").split(",").map((e) => e.trim().toLowerCase());
+      const role = adminEmails.includes(email.toLowerCase()) ? "admin" : "user";
 
+      let user = await getUserByEmail(email);
 
       if (!user) {
         user = await createUser({
           email,
           provider: "google",
           providerId,
-          avatar
+          avatar,
+          role,
         });
       }
 

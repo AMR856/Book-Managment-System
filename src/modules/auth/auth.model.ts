@@ -1,6 +1,7 @@
+import { UserData } from "../../types/userData";
+
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
-import { UserData } from "../types/userData";
 
 export const createUser = async (data: UserData) => {
   return await prisma.users.create({ data });

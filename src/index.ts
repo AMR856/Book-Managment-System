@@ -9,10 +9,10 @@ import express from "express";
 import bodyParser from "body-parser";
 import session from "express-session";
 import passport from "./config/passport";
-import authorRouter from "./authors/author.route";
-import publisherRouter from "./publishers/publisher.route";
-import authRouter from "./auth/auth.route";
-import bookRouter from "./books/book.route";
+import authorRouter from "./modules/authors/author.route";
+import publisherRouter from "./modules/publishers/publisher.route";
+import authRouter from "./modules/auth/auth.route";
+import bookRouter from "./modules/books/book.route";
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -62,7 +62,7 @@ app.get("/debug-session", (req, res) => {
 
 app.use("/authors", authorRouter);
 app.use("/publishers", publisherRouter);
-app.use("/auth", authRouter);
+app.use("/api/auth", authRouter);
 app.use("/books", bookRouter);
 
 app.use(errorHandler);
