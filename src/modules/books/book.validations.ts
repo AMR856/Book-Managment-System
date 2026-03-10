@@ -6,6 +6,7 @@ const bookSchema = Joi.object({
   year: Joi.number().integer().optional(),
   genre: Joi.string().optional(),
   available: Joi.boolean().optional().default(true),
+  quantity: Joi.number().integer().min(0).optional().default(0),
   authorId: Joi.number().integer().required(),
   publisherId: Joi.number().integer().required(),
   createdAt: Joi.forbidden(),

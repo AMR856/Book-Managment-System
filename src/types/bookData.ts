@@ -4,6 +4,7 @@ export interface BookData {
   year?: number;
   genre?: string;
   available?: boolean;
+  quantity?: number;
   authorId: number;
   publisherId: number;
   id?: number;

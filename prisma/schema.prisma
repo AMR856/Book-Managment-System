@@ -38,12 +38,25 @@ model books {
   year           Int?
   genre          String?
   available      Boolean?    @default(true)
+  quantity       Int        @default(0)
   authorId       Int
   publisherId    Int
   author         authors     @relation(fields: [authorId], references: [id])
   publisher      publishers  @relation(fields: [publisherId], references: [id])
   createdAt      DateTime   @default(now())
   updatedAt      DateTime   @updatedAt
+  orders         orders[]
+}
+
+model orders {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  bookId     Int
+  quantity   Int
+  user       users    @relation(fields: [userId], references: [id])
+  book       books    @relation(fields: [bookId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 model users {
@@ -56,4 +69,5 @@ model users {
   role          String   @default("user")
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+  orders        orders[]
 }

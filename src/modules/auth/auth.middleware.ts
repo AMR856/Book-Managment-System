@@ -21,9 +21,7 @@ export const authenticate = async (
   }
 
   const jwtSecret: string = process.env.JWT_SECRET ?? "NIGGA";
-  if (!jwtSecret) {
-    throw new CustomError("JWT_SECRET environment variable is not defined", 500, HttpMessages.FAIL);
-  }
+
 
   try {
     const payload = jwt.verify(token, jwtSecret as string) as JwtPayload;

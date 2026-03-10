@@ -122,6 +122,46 @@ npm run dev
 
 ---
 
+## 🧭 API Routes
+
+### Auth
+- `POST /api/auth/register` — register user (returns JWT)
+- `POST /api/auth/login` — login (returns JWT)
+- `POST /api/auth/logout` — logout (JWT based)
+- `GET /api/auth/profile` — get current user (requires Bearer token)
+- `GET /api/auth/google` — start Google OAuth
+- `GET /api/auth/google/callback` — Google OAuth callback
+- `GET /api/auth/logout` — logout (session-based)
+
+### Authors (admin required for create/update/delete)
+- `GET /authors` — list all authors
+- `GET /authors/:id` — get a specific author
+- `POST /authors` — create author
+- `PUT /authors/:id` — update author
+- `DELETE /authors/:id` — delete author
+
+### Publishers (admin required for create/update/delete)
+- `GET /publishers` — list all publishers
+- `GET /publishers/:id` — get a specific publisher
+- `POST /publishers` — create publisher
+- `PUT /publishers/:id` — update publisher
+- `DELETE /publishers/:id` — delete publisher
+
+### Books (admin required for create/update/delete)
+- `GET /books` — list all books
+- `GET /books/:id` — get a specific book
+- `POST /books` — create book
+- `PUT /books/:id` — update book
+- `DELETE /books/:id` — delete book
+
+### Orders (authenticated users)
+- `GET /orders` — list current user orders (admin returns all orders)
+- `GET /orders/:id` — get order by id
+- `POST /orders` — create order (decrements book quantity)
+- `DELETE /orders/:id` — delete order
+
+---
+
 ## 📌 Notes
 
 * Each module follows **Controller → Service → Model** separation.

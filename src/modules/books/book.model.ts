@@ -11,6 +11,7 @@ export const createBook = async (data: BookData) => {
       year: data.year,
       genre: data.genre,
       available: data.available,
+      quantity: data.quantity,
       author: {
         connect: { id: data.authorId },
       },
@@ -55,6 +56,7 @@ export const updateBook = async (id: number, data: Partial<BookData>) => {
       year: data.year,
       genre: data.genre,
       available: data.available,
+      quantity: data.quantity,
       authorId: data.authorId,
       publisherId: data.publisherId,
     },
