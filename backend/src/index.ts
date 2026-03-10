@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
+import path from "path";
 import { RedisStore } from "connect-redis";
 import { createClient } from "redis";
 import { errorHandler } from "./utils/errorHandler";
@@ -19,6 +20,9 @@ const app = express();
 const port = process.env.PORT || 5000;
 const defaultRedisURL = "redis://localhost:6379";
 const prefix = "books-api-sessions:";
+
+const frontendDir = path.join(__dirname, "../../frontend");
+app.use("/app", express.static(frontendDir, { index: "index.html" }));
 
 const redisClient = createClient({
   url: process.env.REDIS_URL || defaultRedisURL,

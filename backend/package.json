@@ -41,8 +41,9 @@
   "name": "book-managment-system-typescript",
   "scripts": {
     "build": "tsc",
-    "dev": "ts-node src/index.ts",
-    "start": "node dist/index.js"
+    "dev": "nodemon src/index.ts",
+    "start": "node dist/index.js",
+    "seed": "ts-node src/seed.ts"
   },
   "version": "1.0.0"
 }

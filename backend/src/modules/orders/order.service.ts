@@ -4,15 +4,12 @@ import HttpMessages from "../../types/statusMessages";
 import { getUserByID } from "../auth/auth.model";
 import { getBookByID } from "../books/book.model";
 import {
-  createOrder,
   getAllOrders,
   getOrderByID,
   getOrdersByUserId,
-  deleteOrder,
+  createOrderWithStockUpdate,
+  deleteOrderAndRestoreStock,
 } from "./order.model";
-
-const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
 
 export const createOrderService = async (
   userId: number,
@@ -26,42 +23,29 @@ export const createOrderService = async (
   if (!user) {
     throw new CustomError("User does not exist", 404, HttpMessages.FAIL);
   }
+  const bookId = Number(data.bookId);
+  const quantity = Number(data.quantity);
 
-  const book = await getBookByID(data.bookId);
+  if (!bookId || Number.isNaN(bookId)) {
+    throw new CustomError("Invalid bookId", 400, HttpMessages.FAIL);
+  }
+
+  if (!quantity || Number.isNaN(quantity) || quantity <= 0) {
+    throw new CustomError("Quantity must be a positive number", 400, HttpMessages.FAIL);
+  }
+
+  const book = await getBookByID(bookId);
   if (!book) {
     throw new CustomError("Book does not exist", 404, HttpMessages.FAIL);
   }
 
-  if (book.quantity < data.quantity) {
+  if (book.quantity < quantity) {
     throw new CustomError("Not enough quantity available for this book", 400, HttpMessages.FAIL);
   }
 
-  const newQuantity = book.quantity - data.quantity;
+  const newQuantity = book.quantity - quantity;
 
-  const order = await prisma.$transaction(async (tx: any) => {
-    const created = await tx.orders.create({
-      data: {
-        userId,
-        bookId: data.bookId,
-        quantity: data.quantity,
-      },
-      include: {
-        book: true,
-        user: true,
-      },
-    });
-
-    await tx.books.update({
-      where: { id: data.bookId },
-      data: {
-        quantity: newQuantity,
-        available: newQuantity > 0,
-      },
-    });
-
-    return created;
-  });
-
+  const order = await createOrderWithStockUpdate(userId, bookId, quantity, newQuantity);
   return order;
 };
 
@@ -103,5 +87,5 @@ export const deleteOrderService = async (id: number | undefined, userId: number,
     throw new CustomError("Forbidden", 403, HttpMessages.FAIL);
   }
 
-  return deleteOrder(id);
+  return deleteOrderAndRestoreStock(id, order.bookId, order.quantity);
 };
