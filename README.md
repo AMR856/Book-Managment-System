@@ -119,11 +119,23 @@ npx prisma migrate dev
 npx prisma generate
 ```
 
-### 5️⃣ Run the project
+### 5️⃣ Run the backend
 
 ```bash
 npm run dev
 ```
+
+### 6️⃣ Run the frontend
+
+From a second terminal:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Then open http://localhost:3001 (default Next.js port). The frontend will talk to the backend at http://localhost:5000 by default.
 
 ---
 

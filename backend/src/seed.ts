@@ -67,7 +67,6 @@ async function seedAdminUser() {
 
 async function main() {
   console.log("Starting seed...");
-  // Ensure the database schema is ready (recommended to run `prisma db push` first)
   await seedAuthors();
   await seedPublishers();
   await seedBooks();

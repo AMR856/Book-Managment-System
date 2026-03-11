@@ -1,11 +1,10 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import path from "path";
 import { RedisStore } from "connect-redis";
 import { createClient } from "redis";
 import { errorHandler } from "./utils/errorHandler";
-
+import cors from "cors";
 import express from "express";
 import bodyParser from "body-parser";
 import session from "express-session";
@@ -21,9 +20,9 @@ const port = process.env.PORT || 5000;
 const defaultRedisURL = "redis://localhost:6379";
 const prefix = "books-api-sessions:";
 
-const frontendDir = path.join(__dirname, "../../frontend");
-app.use("/app", express.static(frontendDir, { index: "index.html" }));
-
+// const frontendDir = path.join(__dirname, "../../frontend");
+// app.use("/app", express.static(frontendDir, { index: "index.html" }));
+app.use(cors());
 const redisClient = createClient({
   url: process.env.REDIS_URL || defaultRedisURL,
 });
@@ -36,8 +35,8 @@ const redisStore = new RedisStore({
 });
 
 app.use(bodyParser.json());
-app.set("view engine", "ejs");
-app.set("views", "./src/views");
+// app.set("view engine", "ejs");
+// app.set("views", "./src/views");
 
 app.use(
   session({
@@ -76,3 +75,4 @@ app.use(errorHandler);
 app.listen(port, () =>
   console.log(`Server started on http://localhost:${port}`)
 );
+
