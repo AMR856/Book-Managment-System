@@ -1,6 +1,7 @@
+"use client";
+
+import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useRouter } from "next/router";
-import { Layout } from "@/components/Layout";
 import { useAuth } from "@/lib/auth";
 
 export default function RegisterPage() {
@@ -15,6 +16,7 @@ export default function RegisterPage() {
     event.preventDefault();
     setError(null);
     setLoading(true);
+
     try {
       await register(email.trim(), password);
       router.push("/books");
@@ -26,7 +28,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <Layout>
+    <main className="container">
       <div style={{ maxWidth: 520, margin: "0 auto" }}>
         <div className="card">
           <h2>Create account</h2>
@@ -57,10 +59,10 @@ export default function RegisterPage() {
             </button>
           </form>
           <p style={{ marginTop: "1rem", color: "var(--muted)" }}>
-            Already have an account? <a href="/login">Sign in</a>.
+            Already have an account? <a href="/login">Login</a>.
           </p>
         </div>
       </div>
-    </Layout>
+    </main>
   );
 }

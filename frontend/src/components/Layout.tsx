@@ -1,5 +1,7 @@
+"use client";
+
 import Link from "next/link";
-import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { ReactNode } from "react";
 import { useAuth } from "@/lib/auth";
 
@@ -15,10 +17,17 @@ const navItems = [
 ];
 
 export function Layout({ children }: LayoutProps) {
-  const router = useRouter();
   const { user, logout } = useAuth();
+  const [pathname, setPathname] = useState("");
 
-  const active = (href: string) => router.pathname === href;
+  useEffect(() => {
+    const update = () => setPathname(window.location.pathname);
+    update();
+    window.addEventListener("popstate", update);
+    return () => window.removeEventListener("popstate", update);
+  }, []);
+
+  const active = (href: string) => pathname === href;
 
   return (
     <div className="container">

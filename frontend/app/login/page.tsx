@@ -1,6 +1,7 @@
+"use client";
+
+import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useRouter } from "next/router";
-import { Layout } from "@/components/Layout";
 import { useAuth } from "@/lib/auth";
 
 export default function LoginPage() {
@@ -15,6 +16,7 @@ export default function LoginPage() {
     event.preventDefault();
     setError(null);
     setLoading(true);
+
     try {
       await login(email.trim(), password);
       router.push("/books");
@@ -26,7 +28,7 @@ export default function LoginPage() {
   };
 
   return (
-    <Layout>
+    <main className="container">
       <div style={{ maxWidth: 520, margin: "0 auto" }}>
         <div className="card">
           <h2>Login</h2>
@@ -61,6 +63,6 @@ export default function LoginPage() {
           </p>
         </div>
       </div>
-    </Layout>
+    </main>
   );
 }

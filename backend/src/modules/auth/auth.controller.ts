@@ -12,7 +12,6 @@ export const register = async (
 ) => {
   try {
     const user = await registerUser(req.body);
-    const token = createAccessToken(user);
     res.status(201).json({
       status: HttpMessages.SUCCESS,
       data: {
@@ -23,7 +22,6 @@ export const register = async (
           provider: user.provider,
           role: user.role,
         },
-        token,
       },
     });
   } catch (err) {
@@ -40,6 +38,13 @@ export const login = async (
     const { email, password } = req.body;
     const user = await authenticateUser(email, password);
     const token = createAccessToken(user);
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 24 * 60 * 60 * 1000,
+    });
 
     res.status(200).json({
       status: HttpMessages.SUCCESS,
@@ -60,9 +65,16 @@ export const login = async (
 };
 
 export const logoutJwt = (_req: Request, res: Response) => {
+  // Clear the token cookie
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+  });
+
   res.status(200).json({
     status: HttpMessages.SUCCESS,
-    message: "Logged out",
+    message: "Logged out successfully",
   });
 };
 

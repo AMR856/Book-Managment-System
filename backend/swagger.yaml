@@ -1,0 +1,1355 @@
+openapi: 3.0.0
+info:
+  title: Book Management System API
+  description: A comprehensive REST API for managing books, authors, publishers, and orders
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@bookmanagement.com
+  license:
+    name: ISC
+
+servers:
+  - url: http://localhost:5000
+    description: Development server
+  - url: https://api.bookmanagement.com
+    description: Production server
+
+tags:
+  - name: Authentication
+    description: User authentication and authorization endpoints
+  - name: Authors
+    description: Author management endpoints
+  - name: Publishers
+    description: Publisher management endpoints
+  - name: Books
+    description: Book management endpoints
+  - name: Orders
+    description: Order management endpoints
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token for authentication
+
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        email:
+          type: string
+          format: email
+          example: user@example.com
+        role:
+          type: string
+          enum: [user, admin]
+          example: user
+        avatar:
+          type: string
+          nullable: true
+          example: https://example.com/avatar.jpg
+        provider:
+          type: string
+          nullable: true
+          example: google
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Author:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: J.K. Rowling
+        email:
+          type: string
+          format: email
+          example: author@example.com
+        birthDate:
+          type: string
+          format: date
+          nullable: true
+          example: '1965-07-31'
+        nationality:
+          type: string
+          nullable: true
+          example: British
+        biography:
+          type: string
+          nullable: true
+          example: Fictional character creator
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Publisher:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Bloomsbury Publishing
+        email:
+          type: string
+          format: email
+          example: contact@bloomsbury.com
+        address:
+          type: string
+          nullable: true
+          example: 50 Bedford Square, London
+        phone:
+          type: string
+          nullable: true
+          example: +44-20-7631-5800
+        website:
+          type: string
+          nullable: true
+          example: https://www.bloomsbury.com
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Book:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: Harry Potter and the Philosopher's Stone
+        isbn:
+          type: string
+          example: '978-0747532699'
+        year:
+          type: integer
+          nullable: true
+          example: 1997
+        genre:
+          type: string
+          nullable: true
+          example: Fantasy
+        available:
+          type: boolean
+          example: true
+        quantity:
+          type: integer
+          example: 50
+        authorId:
+          type: integer
+          example: 1
+        publisherId:
+          type: integer
+          example: 1
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Order:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        userId:
+          type: integer
+          example: 1
+        bookId:
+          type: integer
+          example: 1
+        quantity:
+          type: integer
+          example: 2
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: FAIL
+        message:
+          type: string
+          example: Error message
+        statusCode:
+          type: integer
+          example: 400
+
+    SuccessResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: SUCCESS
+        data:
+          type: object
+
+    RegisterResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: SUCCESS
+        data:
+          type: object
+          properties:
+            user:
+              $ref: '#/components/schemas/User'
+
+    LoginResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: SUCCESS
+        data:
+          type: object
+          properties:
+            user:
+              $ref: '#/components/schemas/User'
+            token:
+              type: string
+              example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+    AuthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: SUCCESS
+        data:
+          type: object
+          properties:
+            user:
+              $ref: '#/components/schemas/User'
+            token:
+              type: string
+              example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+  responses:
+    UnauthorizedError:
+      description: Unauthorized - Missing or invalid token
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+    ForbiddenError:
+      description: Forbidden - Insufficient permissions
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+    NotFoundError:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+    ConflictError:
+      description: Resource already exists
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+    BadRequestError:
+      description: Bad request - Validation error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+paths:
+  # ===================== AUTHENTICATION ENDPOINTS =====================
+  /api/auth/register:
+    post:
+      tags:
+        - Authentication
+      summary: Register a new user
+      description: Create a new user account with email and password. Users with admin emails will be assigned admin role.
+      operationId: registerUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: user@example.com
+                password:
+                  type: string
+                  minLength: 6
+                  example: password123
+      responses:
+        '201':
+          description: User successfully registered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '409':
+          description: User with this email already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: Login user
+      description: Authenticate user with email and password. Returns JWT token for protected endpoints.
+      operationId: loginUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: user@example.com
+                password:
+                  type: string
+                  example: password123
+      responses:
+        '200':
+          description: User successfully logged in. JWT token is stored in httpOnly cookie named 'token'.
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...; Path=/; HttpOnly; Secure
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          description: Invalid email or password
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+
+  /api/auth/logout:
+    post:
+      tags:
+        - Authentication
+      summary: Logout user
+      description: Logout the current user by invalidating the JWT token.
+      operationId: logoutUser
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: User successfully logged out
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: SUCCESS
+                  message:
+                    type: string
+                    example: Logged out successfully
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /api/auth/profile:
+    get:
+      tags:
+        - Authentication
+      summary: Get user profile
+      description: Retrieve the authenticated user's profile information
+      operationId: getUserProfile
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: User profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: SUCCESS
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /api/auth/google:
+    get:
+      tags:
+        - Authentication
+      summary: Google OAuth authentication
+      description: Redirect to Google OAuth for authentication
+      operationId: googleAuth
+      responses:
+        '302':
+          description: Redirect to Google OAuth login
+
+  /api/auth/google/callback:
+    get:
+      tags:
+        - Authentication
+      summary: Google OAuth callback
+      description: Callback endpoint for Google OAuth. Automatically redirected to by Google.
+      operationId: googleAuthCallback
+      parameters:
+        - name: code
+          in: query
+          required: true
+          description: Authorization code from Google
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Authentication successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+
+  # ===================== AUTHOR ENDPOINTS =====================
+  /authors:
+    get:
+      tags:
+        - Authors
+      summary: Get all authors
+      description: Retrieve a list of all authors in the system
+      operationId: getAllAuthors
+      responses:
+        '200':
+          description: List of authors retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: SUCCESS
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Author'
+
+    post:
+      tags:
+        - Authors
+      summary: Create a new author
+      description: Create a new author. Requires admin role and authentication.
+      operationId: createAuthor
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+              properties:
+                name:
+                  type: string
+                  minLength: 2
+                  example: J.K. Rowling
+                email:
+                  type: string
+                  format: email
+                  example: jk@example.com
+                birthDate:
+                  type: string
+                  format: date
+                  nullable: true
+                  example: '1965-07-31'
+                nationality:
+                  type: string
+                  nullable: true
+                  example: British
+                biography:
+                  type: string
+                  nullable: true
+                  example: Author biography
+      responses:
+        '201':
+          description: Author created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: SUCCESS
+                  data:
+                    $ref: '#/components/schemas/Author'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '409':
+          description: Author with this email already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /authors/{id}:
+    get:
+      tags:
+        - Authors
+      summary: Get author by ID
+      description: Retrieve a specific author by their ID
+      operationId: getAuthor
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Author ID
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Author retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: SUCCESS
+                  data:
+                    $ref: '#/components/schemas/Author'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+    put:
+      tags:
+        - Authors
+      summary: Update author
+      description: Update an existing author. Requires admin role and authentication.
+      operationId: updateAuthor
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Author ID
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+              properties:
+                name:
+                  type: string
+                  minLength: 2
+                  example: J.K. Rowling
+                email:
+                  type: string
+                  format: email
+                  example: jk@example.com
+                birthDate:
+                  type: string
+                  format: date
+                  nullable: true
+                nationality:
+                  type: string
+                  nullable: true
+                biography:
+                  type: string
+                  nullable: true
+      responses:
+        '200':
+          description: Author updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: SUCCESS
+                  message:
+                    type: string
+                    example: Author updated successfully
+                  data:
+                    $ref: '#/components/schemas/Author'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '409':
+          description: Can't have two authors with the same email
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    delete:
+      tags:
+        - Authors
+      summary: Delete author
+      description: Delete an author. Requires admin role and authentication.
+      operationId: deleteAuthor
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Author ID
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Author deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: SUCCESS
+                  message:
+                    type: string
+                    example: Author deleted successfully
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+  # ===================== PUBLISHER ENDPOINTS =====================
+  /publishers:
+    get:
+      tags:
+        - Publishers
+      summary: Get all publishers
+      description: Retrieve a list of all publishers in the system
+      operationId: getAllPublishers
+      responses:
+        '200':
+          description: List of publishers retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: SUCCESS
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Publisher'
+
+    post:
+      tags:
+        - Publishers
+      summary: Create a new publisher
+      description: Create a new publisher. Requires admin role and authentication.
+      operationId: createPublisher
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+              properties:
+                name:
+                  type: string
+                  minLength: 2
+                  example: Bloomsbury Publishing
+                email:
+                  type: string
+                  format: email
+                  example: contact@bloomsbury.com
+                address:
+                  type: string
+                  nullable: true
+                  example: 50 Bedford Square, London
+                phone:
+                  type: string
+                  nullable: true
+                  example: +44-20-7631-5800
+                website:
+                  type: string
+                  nullable: true
+                  example: https://www.bloomsbury.com
+      responses:
+        '201':
+          description: Publisher created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: SUCCESS
+                  data:
+                    $ref: '#/components/schemas/Publisher'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '409':
+          description: Publisher with this email already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /publishers/{id}:
+    get:
+      tags:
+        - Publishers
+      summary: Get publisher by ID
+      description: Retrieve a specific publisher by their ID
+      operationId: getPublisher
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Publisher ID
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Publisher retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: SUCCESS
+                  data:
+                    $ref: '#/components/schemas/Publisher'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+    put:
+      tags:
+        - Publishers
+      summary: Update publisher
+      description: Update an existing publisher. Requires admin role and authentication.
+      operationId: updatePublisher
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Publisher ID
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+              properties:
+                name:
+                  type: string
+                  minLength: 2
+                  example: Bloomsbury Publishing
+                email:
+                  type: string
+                  format: email
+                  example: contact@bloomsbury.com
+                address:
+                  type: string
+                  nullable: true
+                phone:
+                  type: string
+                  nullable: true
+                website:
+                  type: string
+                  nullable: true
+      responses:
+        '200':
+          description: Publisher updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: SUCCESS
+                  message:
+                    type: string
+                    example: Publisher updated successfully
+                  data:
+                    $ref: '#/components/schemas/Publisher'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '409':
+          description: Can't have two publishers with the same email
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    delete:
+      tags:
+        - Publishers
+      summary: Delete publisher
+      description: Delete a publisher. Requires admin role and authentication.
+      operationId: deletePublisher
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Publisher ID
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Publisher deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: SUCCESS
+                  message:
+                    type: string
+                    example: Publisher deleted successfully
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+  # ===================== BOOK ENDPOINTS =====================
+  /books:
+    get:
+      tags:
+        - Books
+      summary: Get all books
+      description: Retrieve a list of all books in the system
+      operationId: getAllBooks
+      responses:
+        '200':
+          description: List of books retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: SUCCESS
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Book'
+
+    post:
+      tags:
+        - Books
+      summary: Create a new book
+      description: Create a new book. Requires admin role and authentication. Author and Publisher must exist.
+      operationId: createBook
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - isbn
+                - authorId
+                - publisherId
+              properties:
+                title:
+                  type: string
+                  minLength: 2
+                  example: Harry Potter and the Philosopher's Stone
+                isbn:
+                  type: string
+                  minLength: 6
+                  example: '978-0747532699'
+                year:
+                  type: integer
+                  nullable: true
+                  example: 1997
+                genre:
+                  type: string
+                  nullable: true
+                  example: Fantasy
+                available:
+                  type: boolean
+                  nullable: true
+                  example: true
+                quantity:
+                  type: integer
+                  minimum: 0
+                  nullable: true
+                  example: 50
+                authorId:
+                  type: integer
+                  example: 1
+                publisherId:
+                  type: integer
+                  example: 1
+      responses:
+        '201':
+          description: Book created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: SUCCESS
+                  data:
+                    $ref: '#/components/schemas/Book'
+        '400':
+          description: Bad request - Invalid data or missing author/publisher
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '409':
+          description: Book with this ISBN already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /books/{id}:
+    get:
+      tags:
+        - Books
+      summary: Get book by ID
+      description: Retrieve a specific book by its ID
+      operationId: getBook
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Book ID
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Book retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: SUCCESS
+                  data:
+                    $ref: '#/components/schemas/Book'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+    put:
+      tags:
+        - Books
+      summary: Update book
+      description: Update an existing book. Requires admin role and authentication. Author and Publisher must exist if provided.
+      operationId: updateBook
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Book ID
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - isbn
+                - authorId
+                - publisherId
+              properties:
+                title:
+                  type: string
+                  minLength: 2
+                  example: Harry Potter and the Philosopher's Stone
+                isbn:
+                  type: string
+                  minLength: 6
+                  example: '978-0747532699'
+                year:
+                  type: integer
+                  nullable: true
+                genre:
+                  type: string
+                  nullable: true
+                available:
+                  type: boolean
+                  nullable: true
+                quantity:
+                  type: integer
+                  minimum: 0
+                  nullable: true
+                authorId:
+                  type: integer
+                publisherId:
+                  type: integer
+      responses:
+        '200':
+          description: Book updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: SUCCESS
+                  message:
+                    type: string
+                    example: Book updated successfully
+                  data:
+                    $ref: '#/components/schemas/Book'
+        '400':
+          description: Bad request - Invalid data or missing author/publisher
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '409':
+          description: Book with this ISBN already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    delete:
+      tags:
+        - Books
+      summary: Delete book
+      description: Delete a book. Requires admin role and authentication.
+      operationId: deleteBook
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Book ID
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Book deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: SUCCESS
+                  message:
+                    type: string
+                    example: Book deleted successfully
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+  # ===================== ORDER ENDPOINTS =====================
+  /orders:
+    get:
+      tags:
+        - Orders
+      summary: Get orders
+      description: Get all orders for admin or current user's orders for regular users
+      operationId: getOrders
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Orders retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: SUCCESS
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Order'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+    post:
+      tags:
+        - Orders
+      summary: Create a new order
+      description: Create a new order for the authenticated user. Automatically updates book stock.
+      operationId: createOrder
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - bookId
+                - quantity
+              properties:
+                bookId:
+                  type: integer
+                  example: 1
+                quantity:
+                  type: integer
+                  minimum: 1
+                  example: 2
+      responses:
+        '201':
+          description: Order created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: SUCCESS
+                  data:
+                    $ref: '#/components/schemas/Order'
+        '400':
+          description: Bad request - Invalid quantity or insufficient stock
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: User or Book not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /orders/{id}:
+    get:
+      tags:
+        - Orders
+      summary: Get order by ID
+      description: Retrieve a specific order. Users can only view their own orders, admins can view all.
+      operationId: getOrder
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Order ID
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Order retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: SUCCESS
+                  data:
+                    $ref: '#/components/schemas/Order'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          description: Forbidden - You can only view your own orders
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+    delete:
+      tags:
+        - Orders
+      summary: Delete order
+      description: Delete an order and restore book stock. Users can only delete their own orders, admins can delete any.
+      operationId: deleteOrder
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Order ID
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Order deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: SUCCESS
+                  message:
+                    type: string
+                    example: Order deleted successfully
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          description: Forbidden - You can only delete your own orders
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundError'

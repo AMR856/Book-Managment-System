@@ -1,5 +1,6 @@
+"use client";
+
 import { useEffect, useMemo, useState } from "react";
-import { Layout } from "@/components/Layout";
 import { Toast } from "@/components/Toast";
 import { useAuth } from "@/lib/auth";
 import { createOrder, deleteOrder, getBooks, getOrders } from "@/lib/api";
@@ -63,7 +64,7 @@ export default function OrdersPage() {
   );
 
   return (
-    <Layout>
+    <main className="container">
       <Toast message={toast?.message ?? null} type={toast?.type} onClear={clearToast} />
 
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
@@ -138,6 +139,6 @@ export default function OrdersPage() {
           })
         )}
       </div>
-    </Layout>
+    </main>
   );
 }

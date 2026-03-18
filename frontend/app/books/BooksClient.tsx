@@ -1,15 +1,24 @@
+"use client";
+
 import { useEffect, useMemo, useState } from "react";
-import { Layout } from "@/components/Layout";
 import { Toast } from "@/components/Toast";
 import { useAuth } from "@/lib/auth";
 import { createBook, deleteBook, getAuthors, getBooks, getPublishers } from "@/lib/api";
 import { Author, Book, Publisher } from "@/types";
 
-export default function BooksPage() {
+type Props = {
+  initialBooks: Book[];
+  initialAuthors: Author[];
+  initialPublishers: Publisher[];
+};
+
+export default function BooksClient({ initialBooks, initialAuthors, initialPublishers }: Props) {
   const { user } = useAuth();
-  const [books, setBooks] = useState<Book[]>([]);
-  const [authors, setAuthors] = useState<Author[]>([]);
-  const [publishers, setPublishers] = useState<Publisher[]>([]);
+  const isAdmin = user?.role === "admin";
+
+  const [books, setBooks] = useState<Book[]>(initialBooks ?? []);
+  const [authors, setAuthors] = useState<Author[]>(initialAuthors ?? []);
+  const [publishers, setPublishers] = useState<Publisher[]>(initialPublishers ?? []);
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState<{ message: string; type?: "success" | "error" } | null>(null);
   const [showCreate, setShowCreate] = useState(false);
@@ -22,8 +31,6 @@ export default function BooksPage() {
     authorId: "",
     publisherId: "",
   });
-
-  const isAdmin = user?.role === "admin";
 
   const clearToast = () => setToast(null);
 
@@ -42,7 +49,9 @@ export default function BooksPage() {
   };
 
   useEffect(() => {
+    // Ensure we have the latest data when the component mounts.
     load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleDelete = async (id: number) => {
@@ -88,7 +97,7 @@ export default function BooksPage() {
   );
 
   return (
-    <Layout>
+    <>
       <Toast message={toast?.message ?? null} type={toast?.type} onClear={clearToast} />
 
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
@@ -215,6 +224,6 @@ export default function BooksPage() {
           })
         )}
       </div>
-    </Layout>
+    </>
   );
 }
